@@ -1,0 +1,325 @@
+========================================================
+  BUS TICKETING SYSTEM - Source Code
+  Language : C
+  Team     : ABUSIDE
+========================================================
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* ── Data Structure ── */
+
+struct Ticket {
+    int  ticketID;
+    char passengerName[50];
+    int  age;
+    char busName[50];
+    int  seatNumber;
+};
+
+int ticketCounter = 1000;
+
+/* ── Function Prototypes ── */
+
+void showBuses();
+void bookTicket();
+void viewTickets();
+void searchTicket();
+void cancelTicket();
+
+/* ════════════════════════════════════════
+   MAIN FUNCTION
+   ════════════════════════════════════════ */
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n========================================\n");
+        printf("        BUS TICKETING SYSTEM            \n");
+        printf("========================================\n");
+        printf(" 1. Show Available Buses\n");
+        printf(" 2. Book Ticket\n");
+        printf(" 3. View All Tickets\n");
+        printf(" 4. Search Ticket\n");
+        printf(" 5. Cancel Ticket\n");
+        printf(" 0. Exit\n");
+        printf("========================================\n");
+        printf(" Enter Choice: ");
+        scanf("%d", &choice);
+        getchar();  /* clear newline from buffer */
+
+        switch (choice) {
+            case 1: showBuses();    break;
+            case 2: bookTicket();   break;
+            case 3: viewTickets();  break;
+            case 4: searchTicket(); break;
+            case 5: cancelTicket(); break;
+            case 0:
+                printf("\n Goodbye! Thank you for using Bus Ticketing System.\n\n");
+                return 0;
+            default:
+                printf("\n [!] Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+/* ════════════════════════════════════════
+   FUNCTION 1 : showBuses()
+   Display the list of available buses
+   ════════════════════════════════════════ */
+
+void showBuses() {
+    printf("\n----------------------------------------\n");
+    printf("          AVAILABLE BUSES               \n");
+    printf("----------------------------------------\n");
+    printf(" 1. Dhaka Express\n");
+    printf(" 2. Green Line\n");
+    printf(" 3. Hanif Enterprise\n");
+    printf("----------------------------------------\n");
+}
+
+/* ════════════════════════════════════════
+   FUNCTION 2 : bookTicket()
+   Take passenger input and save to file
+   ════════════════════════════════════════ */
+
+void bookTicket() {
+    struct Ticket t;
+    FILE *file;
+
+    /* Read ticket counter from counter file */
+    FILE *cf = fopen("counter.txt", "r");
+    if (cf != NULL) {
+        fscanf(cf, "%d", &ticketCounter);
+        fclose(cf);
+    }
+
+    t.ticketID = ticketCounter;
+
+    printf("\n----------------------------------------\n");
+    printf("            BOOK A TICKET               \n");
+    printf("----------------------------------------\n");
+
+    printf(" Passenger Name : ");
+    fgets(t.passengerName, sizeof(t.passengerName), stdin);
+    /* Remove trailing newline */
+    t.passengerName[strcspn(t.passengerName, "\n")] = '\0';
+
+    printf(" Age            : ");
+    scanf("%d", &t.age);
+    getchar();
+
+    showBuses();
+    printf(" Bus Name       : ");
+    fgets(t.busName, sizeof(t.busName), stdin);
+    t.busName[strcspn(t.busName, "\n")] = '\0';
+
+    printf(" Seat Number    : ");
+    scanf("%d", &t.seatNumber);
+    getchar();
+
+    /* Save ticket to file */
+    file = fopen("tickets.txt", "a");
+    if (file == NULL) {
+        printf("\n [!] Error: Could not open tickets file.\n");
+        return;
+    }
+    fprintf(file, "%d|%s|%d|%s|%d\n",
+            t.ticketID, t.passengerName, t.age, t.busName, t.seatNumber);
+    fclose(file);
+
+    /* Update counter */
+    ticketCounter++;
+    cf = fopen("counter.txt", "w");
+    if (cf != NULL) {
+        fprintf(cf, "%d", ticketCounter);
+        fclose(cf);
+    }
+
+    printf("\n [✓] Ticket Booked Successfully!\n");
+    printf("     Ticket ID : %d\n", t.ticketID);
+    printf("----------------------------------------\n");
+}
+
+/* ════════════════════════════════════════
+   FUNCTION 3 : viewTickets()
+   Read and display all tickets from file
+   ════════════════════════════════════════ */
+
+void viewTickets() {
+    struct Ticket t;
+    FILE *file;
+    int count = 0;
+
+    file = fopen("tickets.txt", "r");
+    if (file == NULL) {
+        printf("\n [!] No tickets found.\n");
+        return;
+    }
+
+    printf("\n----------------------------------------\n");
+    printf("           ALL TICKETS                  \n");
+    printf("----------------------------------------\n");
+    printf(" %-6s %-20s %-4s %-18s %-4s\n",
+           "ID", "NAME", "AGE", "BUS", "SEAT");
+    printf("----------------------------------------\n");
+
+    while (fscanf(file, "%d|%49[^|]|%d|%49[^|]|%d\n",
+                  &t.ticketID, t.passengerName,
+                  &t.age, t.busName, &t.seatNumber) == 5) {
+        printf(" %-6d %-20s %-4d %-18s %-4d\n",
+               t.ticketID, t.passengerName,
+               t.age, t.busName, t.seatNumber);
+        count++;
+    }
+
+    fclose(file);
+
+    if (count == 0) {
+        printf(" (No tickets booked yet)\n");
+    }
+
+    printf("----------------------------------------\n");
+    printf(" Total Tickets : %d\n", count);
+    printf("----------------------------------------\n");
+}
+
+/* ════════════════════════════════════════
+   FUNCTION 4 : searchTicket()
+   Search for a ticket by Ticket ID
+   ════════════════════════════════════════ */
+
+void searchTicket() {
+    struct Ticket t;
+    FILE *file;
+    int searchID;
+    int found = 0;
+
+    printf("\n Enter Ticket ID to Search : ");
+    scanf("%d", &searchID);
+    getchar();
+
+    file = fopen("tickets.txt", "r");
+    if (file == NULL) {
+        printf("\n [!] No tickets found.\n");
+        return;
+    }
+
+    while (fscanf(file, "%d|%49[^|]|%d|%49[^|]|%d\n",
+                  &t.ticketID, t.passengerName,
+                  &t.age, t.busName, &t.seatNumber) == 5) {
+        if (t.ticketID == searchID) {
+            printf("\n----------------------------------------\n");
+            printf("           TICKET FOUND                 \n");
+            printf("----------------------------------------\n");
+            printf(" Ticket ID  : %d\n", t.ticketID);
+            printf(" Passenger  : %s\n", t.passengerName);
+            printf(" Age        : %d\n", t.age);
+            printf(" Bus        : %s\n", t.busName);
+            printf(" Seat       : %d\n", t.seatNumber);
+            printf("----------------------------------------\n");
+            found = 1;
+            break;
+        }
+    }
+
+    fclose(file);
+
+    if (!found) {
+        printf("\n [!] Ticket ID %d not found.\n", searchID);
+    }
+}
+
+/* ════════════════════════════════════════
+   FUNCTION 5 : cancelTicket()
+   Delete a ticket by Ticket ID
+   ════════════════════════════════════════ */
+
+void cancelTicket() {
+    struct Ticket t;
+    FILE *file, *temp;
+    int cancelID;
+    int found = 0;
+
+    printf("\n Enter Ticket ID to Cancel : ");
+    scanf("%d", &cancelID);
+    getchar();
+
+    file = fopen("tickets.txt", "r");
+    if (file == NULL) {
+        printf("\n [!] No tickets found.\n");
+        return;
+    }
+
+    temp = fopen("temp.txt", "w");
+    if (temp == NULL) {
+        printf("\n [!] Error: Could not create temp file.\n");
+        fclose(file);
+        return;
+    }
+
+    /* Copy all tickets except the one to cancel */
+    while (fscanf(file, "%d|%49[^|]|%d|%49[^|]|%d\n",
+                  &t.ticketID, t.passengerName,
+                  &t.age, t.busName, &t.seatNumber) == 5) {
+        if (t.ticketID == cancelID) {
+            found = 1;  /* skip this record */
+        } else {
+            fprintf(temp, "%d|%s|%d|%s|%d\n",
+                    t.ticketID, t.passengerName,
+                    t.age, t.busName, t.seatNumber);
+        }
+    }
+
+    fclose(file);
+    fclose(temp);
+
+    if (found) {
+        remove("tickets.txt");
+        rename("temp.txt", "tickets.txt");
+        printf("\n [✓] Ticket ID %d Cancelled Successfully.\n", cancelID);
+    } else {
+        remove("temp.txt");
+        printf("\n [!] Ticket ID %d not found.\n", cancelID);
+    }
+}
+
+/* ════════════════════════════════════════
+   END OF SOURCE CODE
+   ════════════════════════════════════════ */
+
+========================================================
+  HOW TO COMPILE & RUN
+========================================================
+
+  Using GCC (Linux / Mac Terminal):
+  ----------------------------------
+    gcc bus_ticket.c -o bus_ticket
+    ./bus_ticket
+
+  Using GCC (Windows Command Prompt):
+  -------------------------------------
+    gcc bus_ticket.c -o bus_ticket.exe
+    bus_ticket.exe
+
+  Using CodeBlocks:
+  ------------------
+    1. Open CodeBlocks
+    2. Create new Empty Project
+    3. Add new C file, paste the source code
+    4. Press F9 to Build and Run
+
+========================================================
+  FILES CREATED AT RUNTIME
+========================================================
+
+  tickets.txt  -  Stores all booked ticket records
+  counter.txt  -  Stores the last used ticket ID
+
+========================================================
+  TEAM ABUSIDE
+========================================================

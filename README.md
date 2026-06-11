@@ -1,226 +1,86 @@
-# 🚌 Bus Ticketing System
+# Bus Ticketing System
 
-A terminal-based Bus Ticketing System developed in **C Programming Language** using **Structures**, **Functions**, and **File Handling**.
+A simple Bus Ticketing System developed in C that allows users to book, view, search, and cancel bus tickets. Ticket information is stored in text files for basic record management.
 
-This project allows users to book, search, view, and cancel bus tickets while storing data permanently using text files.
+## Features
 
----
+* Book a bus ticket
+* View all booked tickets
+* Search tickets by passenger name
+* Cancel tickets
+* File-based data storage
+* Simple menu-driven interface
 
-## 📌 Project Overview
-
-The Bus Ticketing System is a simple management application designed to automate the process of bus ticket booking and management.
-
-Instead of maintaining tickets manually, the system provides a structured and efficient way to:
-
-- View available buses
-- Book tickets
-- Search tickets
-- View all booked tickets
-- Cancel tickets
-
-Ticket information is stored using file handling, ensuring data persistence between program executions.
-
----
-
-## 🎯 Objectives
-
-- Learn and apply C programming concepts
-- Practice structures and user-defined data types
-- Implement file handling operations
-- Use functions for modular programming
-- Build a real-world management system
-
----
-
-## ✨ Features
-
-### 1. Show Available Buses
-Displays all available buses.
-
-Example:
-```
-1. Dhaka Express
-2. Green Line
-3. Hanif Enterprise
-```
-
-### 2. Book Ticket
-Allows passengers to enter:
-
-- Name
-- Age
-- Bus Name
-- Seat Number
-
-A unique Ticket ID is generated automatically.
-
-### 3. View All Tickets
-Displays all booked tickets stored in the file.
-
-### 4. Search Ticket
-Searches a ticket using Ticket ID.
-
-### 5. Cancel Ticket
-Deletes a ticket record using Ticket ID.
-
-### 6. Persistent Storage
-Data remains saved even after the application is closed.
-
----
-
-## 🏗️ Project Structure
-
-```
-Bus-Ticketing-System/
-│
-├── bus_ticket.c
-├── tickets.txt
-├── counter.txt
-├── README.md
-└── Project_Report.pdf
-```
-
----
-
-## 📊 Data Structure Used
-
-```c
-struct Ticket {
-    int ticketID;
-    char passengerName[50];
-    int age;
-    char busName[50];
-    int seatNumber;
-};
-```
-
----
-
-## 🔧 Functions Used
-
-| Function | Description |
-|-----------|-------------|
-| showBuses() | Display available buses |
-| bookTicket() | Book and save ticket |
-| viewTickets() | Display all tickets |
-| searchTicket() | Search ticket by ID |
-| cancelTicket() | Cancel ticket |
-| main() | Main menu controller |
-
----
-
-## 💾 File Handling
-
-The project uses text files for persistent storage.
-
-### tickets.txt
-Stores all ticket records.
-
-Example:
-
-```
-1000|Abu|22|Green Line|12
-1001|Rahim|25|Hanif Enterprise|07
-```
-
-### counter.txt
-
-Stores the last generated Ticket ID.
-
-Example:
-
-```
-1002
-```
-
----
-
-## ▶️ How to Compile and Run
-
-### GCC (Linux/Mac)
-
-```bash
-gcc bus_ticket.c -o bus_ticket
-./bus_ticket
-```
-
-### GCC (Windows)
-
-```bash
-gcc bus_ticket.c -o bus_ticket.exe
-bus_ticket.exe
-```
-
-### Code::Blocks
-
-1. Open Code::Blocks
-2. Create an Empty Project
-3. Add the source code file
-4. Press **F9** to Build and Run
-
----
-
-## 📸 Sample Menu
+## Project Files
 
 ```text
-========================================
-        BUS TICKETING SYSTEM
-========================================
-1. Show Available Buses
-2. Book Ticket
-3. View All Tickets
-4. Search Ticket
-5. Cancel Ticket
-0. Exit
-========================================
+Bus-ticketing-system/
+│
+├── bus_ticketing_system.txt   # C source code
+├── Bus_Ticketing_System.pdf   # Project documentation/report
+└── README.md
 ```
 
----
+### Runtime Generated Files
 
-## 🧪 Testing Results
+The following files are created automatically when the program runs:
 
-| Test Case | Result |
-|------------|---------|
-| Book Ticket | ✅ Pass |
-| View Tickets | ✅ Pass |
-| Search Ticket | ✅ Pass |
-| Cancel Ticket | ✅ Pass |
+```text
+tickets.txt    # Stores ticket records
+counter.txt    # Stores ticket counter information
+```
 
-All core functionalities were tested successfully.
+## How to Run
 
----
+1. Rename `bus_ticketing_system.txt` to `bus_ticketing_system.c`.
 
-## 🚀 Future Improvements
+2. Compile the program:
 
-- Admin Login System
-- Fare Calculation
-- Seat Availability Validation
-- Interactive Seat Map
-- Bus Schedule Management
-- Database Integration (SQLite/MySQL)
-- Graphical User Interface (GUI)
-- Online Booking Support
+```bash
+gcc bus_ticketing_system.c -o bus_ticketing_system
+```
 
----
+3. Run the executable:
 
-## 📚 Concepts Used
+```bash
+./bus_ticketing_system
+```
 
-- Structures
-- Functions
-- Loops
-- Conditional Statements
-- Switch Case
-- File Handling
-- String Manipulation
+## Available Operations
 
----
+1. Book Ticket
+2. View Tickets
+3. Search Ticket
+4. Cancel Ticket
+5. Exit
 
-Academic Project – C Programming
+## Current Limitations
 
----
+* Bus names entered by users are not validated.
+* Duplicate seat numbers can be booked.
+* Invalid seat numbers are not checked.
+* Data is stored in plain text files only.
 
-## 📄 License
+## Future Improvements
 
-This project is created for educational and academic purposes.
+* Bus name validation
+* Seat availability checking
+* Duplicate seat prevention
+* Better error handling
+* Admin panel
+* Database integration
+* Graphical User Interface (GUI)
 
-Feel free to use, modify, and improve it for learning.
+## Documentation
+
+Detailed project documentation is available in:
+
+`Bus_Ticketing_System.pdf`
+
+## Author
+
+Israt Jahan Kaspeya
+
+## License
+
+This project is intended for educational and learning purposes.
